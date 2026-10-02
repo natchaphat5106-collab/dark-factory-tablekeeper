@@ -1,0 +1,65 @@
+{
+  "kind": "layered",
+  "title": "dark-factory-tablekeeper — stage 1 architecture",
+  "layers": [
+    {
+      "id": "edge",
+      "title": "HTTP edge",
+      "items": [
+        { "id": "http_server", "label": "node:http server", "details": "Ephemeral port, JSON in/out, graceful close" },
+        { "id": "idempotency_filter", "label": "Idempotency filter", "details": "Key lookup, fingerprint compare, replay 200 / KEY_REUSED 409" },
+        { "id": "error_envelope", "label": "Error envelope", "details": "One shape for every non-2xx; 503 on retry budget exhausted" }
+      ]
+    },
+    {
+      "id": "domain",
+      "title": "Booking domain",
+      "items": [
+        { "id": "tz_resolver", "label": "Time-zone resolver", "details": "Local wall time + IANA zone to UTC; 15-min offset scan; 0 candidates = gap, 2 = ambiguous, fold disambiguates" },
+        { "id": "slot_grid", "label": "Slot grid", "details": "Expands a booking into the 15-min quanta it covers; duration must be a positive multiple of 15" },
+        { "id": "booking_service", "label": "Booking write path", "details": "Reserve, cancel, read. Every write inside BEGIN IMMEDIATE. Multi-table bookings are one transaction" },
+        { "id": "availability_search", "label": "Availability search", "details": "Stage 2. Read side of the same guarantee" }
+      ]
+    },
+    {
+      "id": "store",
+      "title": "Storage — SQLite file, WAL",
+      "items": [
+        { "id": "sqlite_file", "label": "One database file", "details": "node:sqlite, journal_mode=WAL, busy_timeout=5000" },
+        { "id": "occupancy_pk", "label": "occupancy PK (table, quantum)", "details": "THE GUARANTEE. Overlapping bookings share a quantum and collide in the store" },
+        { "id": "booking_table", "label": "booking", "details": "confirmed | cancelled, start_utc, duration_min, party_size" },
+        { "id": "idempotency_table", "label": "idempotency_key", "details": "PK on key alone; a retry is a replay, not a second booking" },
+        { "id": "migration_runner", "label": "Migration runner", "details": "schema_migration ledger, idempotent, no ad hoc DDL from handlers" }
+      ]
+    },
+    {
+      "id": "proof",
+      "title": "Correctness harness",
+      "items": [
+        { "id": "race_harness", "label": "Multi-process race", "details": "12+ separate OS processes, one file, one slot: exactly 1 x 201 and 11 x 409" },
+        { "id": "duplicate_harness", "label": "Duplicate delivery", "details": "Same key 10x concurrently: one booking, rest replays" },
+        { "id": "tz_suite", "label": "DST and offset suite", "details": "Spring gap, fall overlap, fold, sub-hour offsets; passes under hostile ambient TZ" },
+        { "id": "atomicity_harness", "label": "Atomicity harness", "details": "Two tables, one taken: zero occupancy rows, zero booking rows, zero key rows" }
+      ]
+    }
+  ],
+  "flows": [
+    { "from": "http_server", "to": "booking_service", "label": "POST /v1/bookings" },
+    { "from": "http_server", "to": "availability_search", "label": "availability query" },
+    { "from": "http_server", "to": "error_envelope", "label": "any non-2xx" },
+    { "from": "idempotency_filter", "to": "idempotency_table", "label": "lookup by key" },
+    { "from": "booking_service", "to": "tz_resolver", "label": "local_start + restaurant zone" },
+    { "from": "tz_resolver", "to": "slot_grid", "label": "resolved UTC instant" },
+    { "from": "booking_service", "to": "slot_grid", "label": "booking to quantum list" },
+    { "from": "slot_grid", "to": "occupancy_pk", "label": "15-min quantum rows" },
+    { "from": "booking_service", "to": "occupancy_pk", "label": "INSERT in BEGIN IMMEDIATE" },
+    { "from": "booking_service", "to": "booking_table", "label": "insert / mark cancelled" },
+    { "from": "migration_runner", "to": "sqlite_file", "label": "apply DDL once" },
+    { "from": "race_harness", "to": "booking_service", "label": "identical booking from N processes" },
+    { "from": "race_harness", "to": "sqlite_file", "label": "N writers, one file" },
+    { "from": "duplicate_harness", "to": "idempotency_filter", "label": "same key 10x" },
+    { "from": "tz_suite", "to": "tz_resolver", "label": "gap / ambiguous / sub-hour offset" },
+    { "from": "atomicity_harness", "to": "booking_service", "label": "2 tables, 1 occupied" },
+    { "from": "availability_search", "to": "occupancy_pk", "label": "read occupancy" }
+  ]
+}

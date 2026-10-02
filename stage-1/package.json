@@ -1,0 +1,23 @@
+{
+  "name": "tablekeeper-stage-1",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "start": "node src/server.ts",
+    "test": "node --test --test-concurrency=1",
+    "test:concurrency": "node --test test/concurrency.test.ts",
+    "test:idempotency": "node --test test/idempotency.test.ts",
+    "test:timezone": "node --test test/timezone.test.ts",
+    "test:atomicity": "node --test test/atomicity.test.ts",
+    "test:http": "node --test test/http.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.0"
+  }
+}
