@@ -72,3 +72,11 @@ unit you were given.
 
 - A receipt is terminal. Do NOT acknowledge a receipt.
 - Do not send "silent turn" messages.
+
+## Certification Ban
+
+- Certification is run by the owner, not by any seat.
+- Do not create certify.sh, cert-*.sh, or any script that iterates `npm test`.
+- Do not run `npm test` in a loop.
+- Do not re-certify a stage that the owner has closed.
+- Do not create probe files or temporary test files in a frozen tree.

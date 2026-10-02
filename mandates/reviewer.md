@@ -64,3 +64,11 @@ You read every change adversarially before it lands. You are the last reader who
 
 - A receipt is terminal. Do NOT acknowledge a receipt.
 - Do not send "silent turn" messages.
+
+## Certification Ban
+
+- Certification is run by the owner, not by any seat.
+- Do not re-run a gate the owner has accepted.
+- Do not investigate digest format, hash truncation, or file size after
+  a ruling closes the question.
+- Do not create certify.sh, cert-*.sh, or any script that iterates `npm test`.

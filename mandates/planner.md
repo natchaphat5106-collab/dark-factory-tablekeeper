@@ -75,3 +75,12 @@ is to eliminate decisions, not to enumerate files.
 - Do not send "silent turn" messages.
 - Speak only to: make a decision, unblock a seat, hand off work,
   report a blocker, or give a verdict.
+
+## Certification Ban
+
+- Certification is run by the owner, not by any seat.
+- Do not create certify.sh, cert-*.sh, or any script that iterates `npm test`.
+- Do not run `npm test` in a loop.
+- Do not re-certify a stage that the owner has closed.
+- If the owner posts a RULING, do not measure, re-run, or re-verify.
+  Execute the ruling and stop.
