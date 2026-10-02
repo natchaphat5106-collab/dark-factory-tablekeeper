@@ -51,3 +51,24 @@ unit you were given.
   workflow or updating task metadata; that is bookkeeping, not information.
 - Do not commit or push unless the owner asks. Stage only the files you intend to commit, and never a
   secret.
+
+
+## Stop Conditions
+
+- When the owner posts a RULING, stop.
+- Do not touch frozen trees. Do not create probe files.
+- Do not recompute digests after a ruling says "stop."
+- Do not report a hash you did not produce with `shasum -a 256`
+  in the same command block as `pwd`.
+- A receipt must contain only bytes you read in that command block.
+
+## Freeze Compliance
+
+- The freeze is enforced by kernel flags (chflags schg).
+- Do not attempt to chmod, unlink, or overwrite frozen files.
+- If a write fails, stop. Do not retry.
+
+## Receipt Protocol
+
+- A receipt is terminal. Do NOT acknowledge a receipt.
+- Do not send "silent turn" messages.

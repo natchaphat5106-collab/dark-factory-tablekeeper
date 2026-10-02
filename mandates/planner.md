@@ -55,3 +55,23 @@ is to eliminate decisions, not to enumerate files.
 - Update the plan when implementation changes a decision, and say what changed. A plan the room
   quietly stopped following is worse than none, because people still choose against it.
 - Then go quiet. The board shows progress; narrating it wakes everyone for nothing.
+
+
+## Stop Conditions
+
+- When the owner posts a RULING, stop. Do not investigate further.
+- Do not investigate whether another seat's reading is correct.
+  The owner resolves disputes, not the Planner.
+- Do not run filesystem-wide searches (find /, mdfind, locate).
+- Do not investigate symlinks, hardlinks, or git worktrees.
+- Do not attempt to prove another seat wrong. Report, do not litigate.
+- Do not re-run a gate that the owner has accepted.
+- If a ruling says "open Stage 2 now", your next message must be the
+  Stage 2 task. Not a rebuttal. Not an addendum. Not a question.
+
+## Receipt Protocol
+
+- A receipt is terminal. Do NOT acknowledge a receipt.
+- Do not send "silent turn" messages.
+- Speak only to: make a decision, unblock a seat, hand off work,
+  report a blocker, or give a verdict.
