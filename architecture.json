@@ -1,6 +1,6 @@
 {
   "kind": "layered",
-  "title": "dark-factory-tablekeeper — stage 1 architecture",
+  "title": "dark-factory-tablekeeper — stage 1 closed, stage 2 open",
   "layers": [
     {
       "id": "edge",
@@ -18,7 +18,10 @@
         { "id": "tz_resolver", "label": "Time-zone resolver", "details": "Local wall time + IANA zone to UTC; 15-min offset scan; 0 candidates = gap, 2 = ambiguous, fold disambiguates" },
         { "id": "slot_grid", "label": "Slot grid", "details": "Expands a booking into the 15-min quanta it covers; duration must be a positive multiple of 15" },
         { "id": "booking_service", "label": "Booking write path", "details": "Reserve, cancel, read. Every write inside BEGIN IMMEDIATE. Multi-table bookings are one transaction" },
-        { "id": "availability_search", "label": "Availability search", "details": "Stage 2. Read side of the same guarantee" }
+        { "id": "availability_search", "label": "Availability search", "details": "STAGE 2 UNIT 1+3+4. Read-only. Never writes occupancy; offers no slot the write side refuses" },
+        { "id": "hours_service", "label": "Hours of operation", "details": "STAGE 2 UNIT 2. Local wall-clock minutes in the restaurant's own zone; absent row means closed" },
+        { "id": "table_assignment", "label": "Table assignment", "details": "STAGE 2 UNIT 3. Multi-table parties solved by decreasing seat-sum; restaurantId required positional, no default" },
+        { "id": "parity_proof", "label": "Search/write parity harness", "details": "STAGE 2 UNIT 1. Enumerated grid; one-directional: bookable=true must mean reserve() succeeds" }
       ]
     },
     {
@@ -29,7 +32,8 @@
         { "id": "occupancy_pk", "label": "occupancy PK (table, quantum)", "details": "THE GUARANTEE. Overlapping bookings share a quantum and collide in the store" },
         { "id": "booking_table", "label": "booking", "details": "confirmed | cancelled, start_utc, duration_min, party_size" },
         { "id": "idempotency_table", "label": "idempotency_key", "details": "PK on key alone; a retry is a replay, not a second booking" },
-        { "id": "migration_runner", "label": "Migration runner", "details": "schema_migration ledger, idempotent, no ad hoc DDL from handlers" }
+        { "id": "migration_runner", "label": "Migration runner", "details": "schema_migration ledger, idempotent, no ad hoc DDL from handlers. Stage 2 adds restaurant_hours to this SAME ledger — one ledger, not two" },
+        { "id": "hours_table", "label": "restaurant_hours", "details": "STAGE 2. One row per weekday; local wall-clock minutes, never UTC; absent row means closed (fail-closed)" }
       ]
     },
     {
@@ -39,7 +43,9 @@
         { "id": "race_harness", "label": "Multi-process race", "details": "12+ separate OS processes, one file, one slot: exactly 1 x 201 and 11 x 409" },
         { "id": "duplicate_harness", "label": "Duplicate delivery", "details": "Same key 10x concurrently: one booking, rest replays" },
         { "id": "tz_suite", "label": "DST and offset suite", "details": "Spring gap, fall overlap, fold, sub-hour offsets; passes under hostile ambient TZ" },
-        { "id": "atomicity_harness", "label": "Atomicity harness", "details": "Two tables, one taken: zero occupancy rows, zero booking rows, zero key rows" }
+        { "id": "atomicity_harness", "label": "Atomicity harness", "details": "Two tables, one taken: zero occupancy rows, zero booking rows, zero key rows" },
+        { "id": "hours_suite", "label": "Hours and zone suite", "details": "STAGE 2 UNIT 2. Same UTC instant, different answer in two zones 12h apart" },
+        { "id": "assignment_suite", "label": "Assignment suite", "details": "STAGE 2 UNIT 3. Greedy-would-be-wrong case; cross-restaurant exclusion; partial-overlap exclusion" }
       ]
     }
   ],
@@ -60,6 +66,16 @@
     { "from": "duplicate_harness", "to": "idempotency_filter", "label": "same key 10x" },
     { "from": "tz_suite", "to": "tz_resolver", "label": "gap / ambiguous / sub-hour offset" },
     { "from": "atomicity_harness", "to": "booking_service", "label": "2 tables, 1 occupied" },
-    { "from": "availability_search", "to": "occupancy_pk", "label": "read occupancy" }
+    { "from": "availability_search", "to": "occupancy_pk", "label": "read occupancy" },
+    { "from": "http_server", "to": "availability_search", "label": "GET /v1/restaurants/:id/availability" },
+    { "from": "availability_search", "to": "table_assignment", "label": "candidate tables for the window" },
+    { "from": "availability_search", "to": "hours_service", "label": "slot inside service window?" },
+    { "from": "hours_service", "to": "hours_table", "label": "weekday + open/close, restaurant zone" },
+    { "from": "hours_service", "to": "tz_resolver", "label": "reuses stage-1 resolver — no second implementation" },
+    { "from": "table_assignment", "to": "occupancy_pk", "label": "excludes any held quantum in range" },
+    { "from": "parity_proof", "to": "availability_search", "label": "isSlotBookable over enumerated grid" },
+    { "from": "parity_proof", "to": "booking_service", "label": "same inputs to reserve()" },
+    { "from": "hours_suite", "to": "hours_service", "label": "boundary + DST + zone-split cases" },
+    { "from": "assignment_suite", "to": "table_assignment", "label": "multi-table + greedy-would-be-wrong" }
   ]
 }

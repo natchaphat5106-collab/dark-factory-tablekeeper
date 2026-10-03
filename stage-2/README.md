@@ -1,9 +1,10 @@
 # Stage 2 — Domain depth and availability search
 
-**Status: placeholder. Not open yet.**
+**Status: open. Stage 1 is closed and certified; this stage is authorised and unimplemented.**
 
-Opens only after stage 1's acceptance commands pass under review. Its task file will be written by the
-Planner and published to the room plan surface before any code is written here.
+The task file is [`TASK.md`](./TASK.md). It is the contract — read it to the end before writing code, and
+treat its acceptance gate as the definition of done. `stage-1/` is closed and immutable: read it, never
+write it. Everything this stage creates lives under `stage-2/`.
 
 ## Scope reserved for this stage
 
@@ -13,7 +14,9 @@ Planner and published to the room plan surface before any code is written here.
 - Table assignment: choosing which tables cover a party, including the case where one party needs two
   tables. Stage 1 guarantees that a multi-table booking is atomic; this stage decides *which* tables.
 - Hours of operation per restaurant, so slots outside service are never offered or accepted.
-- Cancellation windows and the guest-facing manage-or-cancel path.
+- Cancellation windows and the guest-facing manage-or-cancel path — **deferred out of this stage.** Stage 1
+  closed with no cancellation window column and no cancellation route, and adding both is a schema change
+  against a frozen tree. `TASK.md` does not scope them; they belong to stage 3.
 
 ## Explicitly deferred
 
