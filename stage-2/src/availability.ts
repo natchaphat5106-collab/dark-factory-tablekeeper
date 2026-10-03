@@ -189,7 +189,7 @@ function candidateTableSets(tables: TableRow[], partySize: number, seatsById: Ma
     (left, right) =>
       totalSeats(left) - totalSeats(right) ||
       left.length - right.length ||
-      left.join(' ').localeCompare(right.join(' ')),
+      left.join('\u0000').localeCompare(right.join('\u0000')),
   );
 }
 
