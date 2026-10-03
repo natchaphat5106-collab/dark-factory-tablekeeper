@@ -42,7 +42,7 @@ import {
  * this is a search-side bound only, and it is one a reviewer can see rather than an emergent
  * one.
  */
-const MAX_TABLES_PER_BOOKING = 3;
+const MAX_TABLES_PER_BOOKING = 1;
 
 type TableRow = { id: string; seats: number };
 
