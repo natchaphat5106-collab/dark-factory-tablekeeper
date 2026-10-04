@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000';
+const API = '';  // relative — proxy at :8080 forwards to :3000
 let restaurantId = null;
 let tableId = null;
 let lastBookingId = null;
