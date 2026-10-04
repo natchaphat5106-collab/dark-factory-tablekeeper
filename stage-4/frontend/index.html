@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tablekeeper — Restaurant Reservations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>🍽️ Tablekeeper</h1>
+      <p class="subtitle">Restaurant reservations that cannot double-book</p>
+    </header>
+
+    <section id="setup">
+      <h2>1. Setup</h2>
+      <p class="hint">Create a restaurant and a table to get started</p>
+      <div class="button-row">
+        <button id="create-restaurant">Create Restaurant</button>
+        <button id="create-table" disabled>Create Table (4 seats)</button>
+      </div>
+      <pre id="setup-output"></pre>
+    </section>
+
+    <section id="booking">
+      <h2>2. Book a Table</h2>
+      <form id="booking-form">
+        <label>Date <input type="date" id="date" required></label>
+        <label>Time <input type="time" id="time" step="900" required>
+          <small>Must be on 15-minute grid (00, 15, 30, 45)</small>
+        </label>
+        <label>Party <input type="number" id="party-size" min="1" max="10" value="2" required></label>
+        <label>Duration (min) <input type="number" id="duration" min="15" max="720" step="15" value="90" required></label>
+        <div class="button-row">
+          <button type="submit" id="book-btn" disabled>Book Table</button>
+          <button type="button" id="cancel-btn" disabled>Cancel Booking</button>
+        </div>
+      </form>
+      <div id="booking-status" class="status"></div>
+      <pre id="booking-output"></pre>
+    </section>
+
+    <footer>
+      <p>Dark Factory Tablekeeper — 139 tests certified</p>
+      <p><a href="https://github.com/natchaphat5106-collab/dark-factory-tablekeeper" target="_blank">GitHub</a></p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
