@@ -1,87 +1,260 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Soft pastel theme. Each card picks a pastel pair (--card / --card-deep); buttons and
+   focus rings inside it inherit that pair so every step reads as one colour family. */
 :root {
-  --bg: #0f172a; --panel: #1e293b; --border: #334155;
-  --text: #e2e8f0; --muted: #94a3b8;
-  --accent: #22c55e; --accent-hover: #16a34a;
-  --error: #ef4444; --pending: #f59e0b;
+  color-scheme: light dark;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #fbf7f1;
+  --surface: #fffdf9;
+  --ink: #2b2a33;
+  --muted: #6a6676;
+  --line: #2b2a33;
+  --border-w: 1.5px;
+
+  --mint: #ddf4e8;      --mint-deep: #8dd3b2;
+  --lavender: #e9e4fb;  --lavender-deep: #ada0ea;
+  --peach: #ffe6d8;     --peach-deep: #f4ae8c;
+  --butter: #fff3c9;    --butter-deep: #e8c65a;
+  --rose: #ffdde2;      --rose-deep: #e7899a;
+
+  --success-ink: #1f6b49;
+  --pending-ink: #7a5200;
+  --error-ink: #a1233b;
+
+  --card: var(--lavender);
+  --card-deep: var(--lavender-deep);
+
+  /* Cursor graphics: a pastel arrow, and a peach one over anything clickable. */
+  --cursor-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M4 3 L4 22 L9.2 17.2 L12.8 25 L16.2 23.5 L12.7 15.9 L19.8 15.9 Z' fill='%23E9E4FB' stroke='%232B2A33' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto;
+  --cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M4 3 L4 22 L9.2 17.2 L12.8 25 L16.2 23.5 L12.7 15.9 L19.8 15.9 Z' fill='%23FFC9AE' stroke='%232B2A33' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='21.5' cy='6.5' r='2.6' fill='%23FFF3C9' stroke='%232B2A33' stroke-width='1.4'/%3E%3C/svg%3E") 4 3, pointer;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17161d;
+    --surface: #211f29;
+    --ink: #f3efe8;
+    --muted: #a8a3b5;
+    --line: #4a4658;
+
+    --mint: #213a30;      --mint-deep: #78c7a3;
+    --lavender: #2d2950;  --lavender-deep: #a196e6;
+    --peach: #45302a;     --peach-deep: #e9a07f;
+    --butter: #3d3419;    --butter-deep: #e0bf55;
+    --rose: #44242f;      --rose-deep: #e7899a;
+
+    --success-ink: #9fe3c4;
+    --pending-ink: #f2d27a;
+    --error-ink: #ffb3c0;
+  }
+}
+
+html { cursor: var(--cursor-default); }
+a, button:not(:disabled), select, summary, input[type="date"], input[type="time"] {
+  cursor: var(--cursor-pointer);
+}
+input[type="text"], input[type="number"] { cursor: text; }
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg); color: var(--text);
-  line-height: 1.5; min-height: 100vh; padding: 2rem 1rem;
+  font-family: var(--font-body);
+  background: var(--bg);
+  /* Soft pastel blooms behind the cards; fixed so they do not scroll with content. */
+  background-image:
+    radial-gradient(40rem 28rem at 8% -6%, color-mix(in srgb, var(--lavender) 85%, transparent), transparent 70%),
+    radial-gradient(36rem 26rem at 100% 12%, color-mix(in srgb, var(--mint) 85%, transparent), transparent 70%),
+    radial-gradient(40rem 30rem at 50% 108%, color-mix(in srgb, var(--peach) 80%, transparent), transparent 70%);
+  background-attachment: fixed;
+  color: var(--ink);
+  line-height: 1.55;
+  min-height: 100vh;
+  padding: 3rem 1rem 2rem;
+  -webkit-font-smoothing: antialiased;
 }
 main { max-width: 640px; margin: 0 auto; }
-header { text-align: center; margin-bottom: 2rem; }
-h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-h2 { font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--accent); }
-.subtitle { color: var(--muted); font-size: 0.95rem; }
-.hint { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
-section {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+
+header { text-align: center; margin-bottom: 2.5rem; }
+.brand-mark {
+  display: inline-grid; place-items: center;
+  width: 3.75rem; height: 3.75rem; margin-bottom: 1rem;
+  font-size: 1.75rem; line-height: 1;
+  background: var(--butter);
+  border: var(--border-w) solid var(--line); border-radius: 50%;
+  box-shadow: 4px 4px 0 var(--butter-deep);
 }
-label { display: block; margin-bottom: 1rem; font-size: 0.9rem; color: var(--muted); }
-label small { display: block; font-size: 0.75rem; margin-top: 0.25rem; font-style: italic; }
+h1 {
+  font-family: var(--font-display);
+  font-size: 2.75rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+h2 {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+.step {
+  display: inline-grid; place-items: center; flex: none;
+  width: 2rem; height: 2rem;
+  font-size: 0.95rem; font-weight: 700;
+  background: var(--surface);
+  border: var(--border-w) solid var(--line); border-radius: 50%;
+  box-shadow: 2px 2px 0 var(--card-deep);
+}
+.subtitle { color: var(--muted); font-size: 1rem; text-wrap: balance; }
+.hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+
+.card {
+  background: var(--card);
+  border: var(--border-w) solid var(--line);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 6px 6px 0 var(--card-deep);
+}
+.card-mint     { --card: var(--mint);     --card-deep: var(--mint-deep); }
+.card-lavender { --card: var(--lavender); --card-deep: var(--lavender-deep); }
+.card-peach    { --card: var(--peach);    --card-deep: var(--peach-deep); }
+@media (prefers-color-scheme: dark) {
+  /* On a dark page an ink-dark border disappears, so cards and their pieces draw edges in their own pastel. */
+  .card, .card .step, .card input, .card select, .card .summary, .card pre { border-color: var(--card-deep); }
+}
+
+label {
+  display: block; margin-bottom: 1.1rem;
+  font-size: 0.9rem; font-weight: 500; color: var(--ink);
+}
+label small {
+  display: block; margin-top: 0.35rem;
+  font-size: 0.78rem; font-weight: 400; color: var(--muted);
+}
 input, select {
-  width: 100%; padding: 0.6rem; margin-top: 0.4rem;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 6px; color: var(--text); font-size: 0.95rem;
+  width: 100%; margin-top: 0.4rem; padding: 0.65rem 0.8rem;
+  font: inherit; font-size: 0.95rem; font-weight: 400; color: var(--ink);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line); border-radius: 12px;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+input:hover, select:hover { border-color: var(--card-deep); }
+input:focus-visible, select:focus-visible {
+  outline: none;
+  border-color: var(--line);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--card-deep) 55%, transparent);
 }
 /* Keep the native control and its dropdown affordance; only colour is themed. */
-select option { background: var(--panel); color: var(--text); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select option { background: var(--surface); color: var(--ink); }
+:focus-visible { outline: 2px dashed var(--ink); outline-offset: 3px; }
+
 button {
-  padding: 0.7rem 1.25rem; background: var(--accent); color: white;
-  border: none; border-radius: 6px; font-size: 0.9rem;
-  font-weight: 600; cursor: pointer; transition: background-color 0.15s;
+  padding: 0.7rem 1.3rem;
+  font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.01em;
+  color: var(--ink);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line); border-radius: 999px;
+  box-shadow: 3px 3px 0 var(--card-deep);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s;
 }
-button:hover:not(:disabled) { background: var(--accent-hover); }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-.button-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+button:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--card-deep); }
+button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--card-deep); }
+button.primary { color: var(--bg); background: var(--ink); }
+button.danger { background: var(--rose); box-shadow: 3px 3px 0 var(--rose-deep); }
+button.danger:hover:not(:disabled) { box-shadow: 4px 4px 0 var(--rose-deep); }
+button.danger:active:not(:disabled) { box-shadow: 1px 1px 0 var(--rose-deep); }
+/* Disabled reads as an outline placeholder rather than a faded fill, which turns muddy on pastel. */
+button:disabled, button.danger:disabled {
+  color: var(--muted); background: transparent;
+  border-style: dashed; border-color: var(--muted);
+  box-shadow: none; cursor: not-allowed;
+}
+.button-row { display: flex; gap: 0.85rem; flex-wrap: wrap; }
+
 pre {
-  background: var(--bg); border: 1px solid var(--border);
-  padding: 1rem; border-radius: 6px; overflow: auto;
-  max-height: 300px; font-size: 0.8rem; color: var(--muted);
-  margin-top: 1rem;
+  margin-top: 0.75rem; padding: 1rem;
+  max-height: 300px; overflow: auto;
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line); border-radius: 12px;
 }
 code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.8rem; background: var(--bg);
-  border: 1px solid var(--border); border-radius: 4px; padding: 0.05rem 0.3rem;
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.05rem 0.35rem;
 }
+
 .status {
-  margin-top: 1rem; padding: 0.75rem 1rem;
-  border-radius: 6px; font-size: 0.9rem; display: none;
+  display: none;
+  margin-top: 1.1rem; padding: 0.75rem 1rem;
+  font-size: 0.9rem; font-weight: 500;
+  border: var(--border-w) solid var(--line); border-radius: 12px;
 }
 .status:not(:empty) { display: block; }
 /* A field that follows a button row + status needs the same gap labels get from each other. */
 .status + label { margin-top: 1.25rem; }
-.status.pending { background: rgba(245,158,11,0.15); border: 1px solid var(--pending); color: var(--pending); }
-.status.success { background: rgba(34,197,94,0.15); border: 1px solid var(--accent); color: var(--accent); }
-.status.info    { background: rgba(148,163,184,0.15); border: 1px solid var(--border); color: var(--text); }
-.status.error   { background: rgba(239,68,68,0.15); border: 1px solid var(--error); color: var(--error); }
+.status.pending { background: var(--butter); color: var(--pending-ink); box-shadow: 3px 3px 0 var(--butter-deep); }
+.status.success { background: var(--mint);   color: var(--success-ink); box-shadow: 3px 3px 0 var(--mint-deep); }
+.status.info    { background: var(--surface); color: var(--ink);        box-shadow: 3px 3px 0 var(--lavender-deep); }
+.status.error   { background: var(--rose);   color: var(--error-ink);   box-shadow: 3px 3px 0 var(--rose-deep); }
+
 .summary {
-  display: grid; grid-template-columns: minmax(7rem, auto) 1fr;
-  gap: 0.4rem 1rem; font-size: 0.9rem;
+  display: grid; grid-template-columns: minmax(7.5rem, auto) 1fr;
+  gap: 0.55rem 1rem;
+  margin-bottom: 1.25rem; padding: 1rem 1.15rem;
+  font-size: 0.9rem;
+  background: var(--surface);
+  border: var(--border-w) solid var(--line); border-radius: 14px;
 }
 .summary:empty { display: none; }
 .summary dt { color: var(--muted); }
-.summary dd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; word-break: break-all; }
-.status-confirmed { color: var(--accent); font-weight: 600; }
-.status-cancelled { color: var(--error); font-weight: 600; }
-details { margin-top: 1rem; }
-summary { color: var(--muted); font-size: 0.85rem; cursor: pointer; }
-footer {
-  text-align: center; color: var(--muted); font-size: 0.8rem;
-  margin-top: 3rem; padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
+.summary dd { font-family: var(--font-mono); font-size: 0.8rem; word-break: break-all; align-self: center; }
+.summary dd.status-confirmed, .summary dd.status-cancelled {
+  justify-self: start;
+  padding: 0.05rem 0.6rem;
+  font-family: var(--font-display); font-weight: 600;
+  border: 1px solid var(--line); border-radius: 999px;
 }
-footer a { color: var(--accent); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
+.status-confirmed { color: var(--success-ink); background: var(--mint); }
+.status-cancelled { color: var(--error-ink); background: var(--rose); }
+
+details { margin-top: 1.25rem; }
+summary { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
+summary:hover { color: var(--ink); }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem;
+  text-align: center; color: var(--muted); font-size: 0.85rem;
+  border-top: var(--border-w) dashed var(--line);
+}
+footer p + p { margin-top: 0.25rem; }
+footer a {
+  font-family: var(--font-display); font-weight: 600; color: var(--ink);
+  text-decoration: underline; text-decoration-color: var(--peach-deep);
+  text-decoration-thickness: 2px; text-underline-offset: 3px;
+}
+footer a:hover { text-decoration-color: var(--lavender-deep); }
+
+/* Trailing ring drawn by cursor.js; it only exists on fine pointers without reduced motion. */
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 9999;
+  width: 34px; height: 34px; margin: -17px 0 0 -17px;
+  border: var(--border-w) solid var(--ink); border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s;
+}
+.cursor-ring.is-visible { opacity: 0.55; }
+.cursor-ring.is-active {
+  opacity: 0.8;
+  background: color-mix(in srgb, var(--peach-deep) 30%, transparent);
+  border-color: var(--peach-deep);
+}
+
 @media (max-width: 480px) {
-  body { padding: 1rem 0.75rem; }
-  h1 { font-size: 1.5rem; }
-  section { padding: 1rem; }
+  body { padding: 1.5rem 1rem; }
+  h1 { font-size: 2rem; }
+  .card { padding: 1.25rem; border-radius: 16px; box-shadow: 4px 4px 0 var(--card-deep); }
   .button-row { flex-direction: column; }
   button { width: 100%; }
   .summary { grid-template-columns: 1fr; gap: 0.1rem; }

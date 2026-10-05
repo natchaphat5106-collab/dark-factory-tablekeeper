@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tablekeeper — Restaurant Reservations</title>
+  <title>Tablekeeper - Restaurant Reservations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <header>
-      <h1>🍽️ Tablekeeper</h1>
-      <p class="subtitle">Restaurant reservations that cannot double-book</p>
+      <span class="brand-mark" aria-hidden="true">🍽️</span>
+      <h1>Tablekeeper</h1>
+      <p class="subtitle">Restaurant reservations that cannot double&#8209;book</p>
     </header>
 
-    <section id="setup" aria-labelledby="setup-heading">
-      <h2 id="setup-heading">1. Set up</h2>
+    <section id="setup" class="card card-mint" aria-labelledby="setup-heading">
+      <h2 id="setup-heading"><span class="step" aria-hidden="true">1</span>Set up</h2>
       <p class="hint">A booking belongs to a restaurant and a table, so create those first.</p>
 
       <label for="restaurant-name">Restaurant name
@@ -27,7 +31,7 @@
       </label>
 
       <div class="button-row">
-        <button type="button" id="create-restaurant">Create restaurant</button>
+        <button type="button" id="create-restaurant" class="primary">Create restaurant</button>
       </div>
       <div id="restaurant-status" class="status" role="status" aria-live="polite"></div>
 
@@ -35,13 +39,13 @@
         <input type="number" id="table-seats" min="1" max="20" step="1" value="4" required>
       </label>
       <div class="button-row">
-        <button type="button" id="create-table" disabled>Create table</button>
+        <button type="button" id="create-table" class="primary" disabled>Create table</button>
       </div>
       <div id="table-status" class="status" role="status" aria-live="polite"></div>
     </section>
 
-    <section id="booking" aria-labelledby="booking-heading">
-      <h2 id="booking-heading">2. Book</h2>
+    <section id="booking" class="card card-lavender" aria-labelledby="booking-heading">
+      <h2 id="booking-heading"><span class="step" aria-hidden="true">2</span>Book</h2>
       <p class="hint" id="booking-hint">
         The service publishes no availability endpoint, so the booking attempt is also the
         availability check: the server refuses it with <code>SLOT_TAKEN</code> when the table is gone.
@@ -67,7 +71,7 @@
         </label>
 
         <div class="button-row">
-          <button type="submit" id="book-btn" disabled>Book table</button>
+          <button type="submit" id="book-btn" class="primary" disabled>Book table</button>
           <button type="button" id="retry-btn" disabled>Retry same request</button>
         </div>
       </form>
@@ -75,15 +79,15 @@
       <div id="booking-status" class="status" role="status" aria-live="polite"></div>
     </section>
 
-    <section id="confirmation" aria-labelledby="confirmation-heading">
-      <h2 id="confirmation-heading">3. Confirm</h2>
+    <section id="confirmation" class="card card-peach" aria-labelledby="confirmation-heading">
+      <h2 id="confirmation-heading"><span class="step" aria-hidden="true">3</span>Confirm</h2>
       <p class="hint">Read back from the server after every change, so what is shown is what was stored.</p>
 
       <dl id="booking-summary" class="summary"></dl>
 
       <div class="button-row">
         <button type="button" id="refresh-btn" disabled>Re-read from server</button>
-        <button type="button" id="cancel-btn" disabled>Cancel booking</button>
+        <button type="button" id="cancel-btn" class="danger" disabled>Cancel booking</button>
       </div>
 
       <div id="confirm-status" class="status" role="status" aria-live="polite"></div>
@@ -100,5 +104,6 @@
     </footer>
   </main>
   <script src="app.js"></script>
+  <script src="cursor.js"></script>
 </body>
 </html>
