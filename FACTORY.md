@@ -51,3 +51,28 @@ Reading it does not make the result cleaner, and there is no partial credit for 
 `stage-1/` ships with its build configuration and this factory's task file. Production code for any
 stage is written by the Implementer, not by the Planner — the `src/` and `test/` directories are
 intentionally empty until then.
+---
+
+## Submission scope (2026-10-05)
+
+Stages completed against the spec: 1 (concurrency core).
+Stages not built: 2 (browser UI + combinations), 3 (policies + series), 4 (replans + amendments).
+
+Stage 1 implements the double-booking guarantee as the central design choice. API endpoints diverge from the spec. This is recorded honestly in `README.md`.
+
+The factory itself is the primary artifact: three agent seats with generic mandates, a coordination protocol extracted from 17 invariants observed during real work (receipt loops, freeze breaches, digest fights), and a recovery model that catches bad work before it ships.
+
+`stage-4/` is a product-surface extra (browser frontend + dev proxy). It does not claim a per-spec stage.
+
+---
+
+## Submission scope (2026-10-05)
+
+Stages completed against the spec: 1 (concurrency core).
+Stages not built: 2 (browser UI + combinations), 3 (policies + series), 4 (replans + amendments).
+
+Stage 1 implements the double-booking guarantee as the central design choice. API endpoints diverge from the spec. This is recorded honestly in `README.md`.
+
+The factory itself is the primary artifact: three agent seats with generic mandates, a coordination protocol extracted from 17 invariants observed during real work (receipt loops, freeze breaches, digest fights), and a recovery model that catches bad work before it ships.
+
+`stage-4/` is a product-surface extra (browser frontend + dev proxy). It does not claim a per-spec stage.
