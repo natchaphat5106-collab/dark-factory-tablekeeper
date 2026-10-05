@@ -54,6 +54,8 @@ code {
   border-radius: 6px; font-size: 0.9rem; display: none;
 }
 .status:not(:empty) { display: block; }
+/* A field that follows a button row + status needs the same gap labels get from each other. */
+.status + label { margin-top: 1.25rem; }
 .status.pending { background: rgba(245,158,11,0.15); border: 1px solid var(--pending); color: var(--pending); }
 .status.success { background: rgba(34,197,94,0.15); border: 1px solid var(--accent); color: var(--accent); }
 .status.info    { background: rgba(148,163,184,0.15); border: 1px solid var(--border); color: var(--text); }

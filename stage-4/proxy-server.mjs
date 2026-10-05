@@ -14,8 +14,10 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const FRONTEND_DIR = new URL('./frontend/', import.meta.url).pathname;
+// fileURLToPath, not URL#pathname: on Windows the pathname is "/C:/..." which is not a valid path.
+const FRONTEND_DIR = fileURLToPath(new URL('./frontend/', import.meta.url));
 const API_TARGET = 'http://localhost:3000';
 const PORT = 8080;
 
