@@ -13,37 +13,90 @@
       <p class="subtitle">Restaurant reservations that cannot double-book</p>
     </header>
 
-    <section id="setup">
-      <h2>1. Setup</h2>
-      <p class="hint">Create a restaurant and a table to get started</p>
+    <section id="setup" aria-labelledby="setup-heading">
+      <h2 id="setup-heading">1. Set up</h2>
+      <p class="hint">A booking belongs to a restaurant and a table, so create those first.</p>
+
+      <label for="restaurant-name">Restaurant name
+        <input type="text" id="restaurant-name" value="Demo Bistro" required autocomplete="organization">
+      </label>
+
+      <label for="restaurant-tz">Time zone
+        <select id="restaurant-tz" required></select>
+        <small>Slots are held in this zone. The list comes from the runtime, not from a hand-kept list.</small>
+      </label>
+
       <div class="button-row">
-        <button id="create-restaurant">Create Restaurant</button>
-        <button id="create-table" disabled>Create Table (4 seats)</button>
+        <button type="button" id="create-restaurant">Create restaurant</button>
       </div>
-      <pre id="setup-output"></pre>
+      <div id="restaurant-status" class="status" role="status" aria-live="polite"></div>
+
+      <label for="table-seats">Seats at the table
+        <input type="number" id="table-seats" min="1" max="20" step="1" value="4" required>
+      </label>
+      <div class="button-row">
+        <button type="button" id="create-table" disabled>Create table</button>
+      </div>
+      <div id="table-status" class="status" role="status" aria-live="polite"></div>
     </section>
 
-    <section id="booking">
-      <h2>2. Book a Table</h2>
+    <section id="booking" aria-labelledby="booking-heading">
+      <h2 id="booking-heading">2. Book</h2>
+      <p class="hint" id="booking-hint">
+        The service publishes no availability endpoint, so the booking attempt is also the
+        availability check: the server refuses it with <code>SLOT_TAKEN</code> when the table is gone.
+      </p>
+
       <form id="booking-form">
-        <label>Date <input type="date" id="date" required></label>
-        <label>Time <input type="time" id="time" step="900" required>
-          <small>Must be on 15-minute grid (00, 15, 30, 45)</small>
+        <label for="date">Date
+          <input type="date" id="date" required>
         </label>
-        <label>Party <input type="number" id="party-size" min="1" max="10" value="2" required></label>
-        <label>Duration (min) <input type="number" id="duration" min="15" max="720" step="15" value="90" required></label>
+
+        <label for="time">Time
+          <input type="time" id="time" step="900" required>
+          <small>15-minute grid. This is the restaurant's local wall time, not your device's.</small>
+        </label>
+
+        <label for="party-size">Party size
+          <input type="number" id="party-size" min="1" step="1" value="2" required>
+          <small id="party-hint">Capped by the table's seat count.</small>
+        </label>
+
+        <label for="duration">Duration (min)
+          <input type="number" id="duration" min="15" max="720" step="15" value="90" required>
+        </label>
+
         <div class="button-row">
-          <button type="submit" id="book-btn" disabled>Book Table</button>
-          <button type="button" id="cancel-btn" disabled>Cancel Booking</button>
+          <button type="submit" id="book-btn" disabled>Book table</button>
+          <button type="button" id="retry-btn" disabled>Retry same request</button>
         </div>
       </form>
-      <div id="booking-status" class="status"></div>
-      <pre id="booking-output"></pre>
+
+      <div id="booking-status" class="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section id="confirmation" aria-labelledby="confirmation-heading">
+      <h2 id="confirmation-heading">3. Confirm</h2>
+      <p class="hint">Read back from the server after every change, so what is shown is what was stored.</p>
+
+      <dl id="booking-summary" class="summary"></dl>
+
+      <div class="button-row">
+        <button type="button" id="refresh-btn" disabled>Re-read from server</button>
+        <button type="button" id="cancel-btn" disabled>Cancel booking</button>
+      </div>
+
+      <div id="confirm-status" class="status" role="status" aria-live="polite"></div>
+
+      <details id="raw-details">
+        <summary>Raw API responses</summary>
+        <pre id="api-output"></pre>
+      </details>
     </section>
 
     <footer>
-      <p>Dark Factory Tablekeeper — 139 tests certified</p>
-      <p><a href="https://github.com/natchaphat5106-collab/dark-factory-tablekeeper" target="_blank">GitHub</a></p>
+      <p>Stage 1 service, stage 4 product surface.</p>
+      <p><a href="https://github.com/natchaphat5106-collab/dark-factory-tablekeeper" target="_blank" rel="noopener noreferrer">GitHub</a></p>
     </footer>
   </main>
   <script src="app.js"></script>
