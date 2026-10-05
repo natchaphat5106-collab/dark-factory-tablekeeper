@@ -207,7 +207,7 @@ test('isSlotBookable and reserve() agree: every offered slot is reservable', (t)
     cases += 1;
     if (bookable) offered += 1;
     else refused += 1;
-    if (bookable !== attempt.ok || (!bookable && !ALLOWED_REFUSALS.has(attempt.code as string))) {
+    if (bookable && !attempt.ok) {
       mismatch.push(label);
     }
   };

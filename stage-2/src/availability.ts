@@ -126,8 +126,7 @@ export function isSlotBookable(
  * offer `{4,4}` for a party of six and the write path would answer `TABLE_TOO_SMALL` — a slot
  * offered and then refused, which is the one defect this stage exists to prevent. So every
  * table in a workable set seats the party. That also means one table is sufficient whenever a
- * set is, and the multi-table branches below exist because the seat rule is stage 1's rather
- * than a law: if the write path ever gains a split-party rule, this solver is already correct.
+ * set is, and the multi-table branches below exist because the seat rule is stage 1's rather than a law.
  *
  * `restaurantId` is a required positional argument with no default, and it appears in every
  * query here. The stage-1 defect this is guarding against was exactly a table lookup keyed on
